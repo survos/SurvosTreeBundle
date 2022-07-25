@@ -1,4 +1,7 @@
-import {Controller} from "@hotwired/stimulus"
+// tree-bundle/assets/src/controllers/tree_controller.js
+
+import {Controller} from "@hotwired/stimulus";
+import jQuery from 'jquery';
 import 'jstree';
 
 export default class extends Controller {
@@ -22,6 +25,7 @@ export default class extends Controller {
     }
 
     html(el) {
+        // jQuery.tree.reference(el );
         $(el).jstree(
             {
                 "plugins": ['checkbox', 'theme', "html_data", "types"]

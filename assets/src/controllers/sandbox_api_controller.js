@@ -4,7 +4,8 @@ import {Controller} from "@hotwired/stimulus";
 import {default as axios} from "axios";
 // const $ = window.jQuery; // require('jquery');
 require('jstree'); // add jstree to jquery
-import $ from 'jquery'; // for jstree
+// import $ from 'jquery'; // for jstree
+// let $ = global.$;
 
 const contentTypes = {
     'PATCH': 'application/merge-patch+json',
@@ -25,7 +26,10 @@ export default class extends Controller {
         this.url = this.apiCallValue;
         console.log('hi from ' + this.identifier + ' ' + this.url, this.filter);
         this.treeElement = this.ajaxTarget;
-        this.configure($(this.treeElement));
+        this.$element = $(this.treeElement); // hackish
+        this.configure(this.$element);
+        this.addListeners(this.$element);
+        this.render();
 
     }
 
@@ -34,6 +38,7 @@ export default class extends Controller {
         console.log(message);
         this.messageTarget.innerHTML = message;
     }
+
 
     configure($element)
     {
@@ -82,7 +87,21 @@ export default class extends Controller {
                     },
                     'force_text' : true,
                     "themes" : { "stripes" : true },
-                    'data' : {
+                    'data' : [
+                        'Simple root node',
+                        {
+                            'text' : 'Root node 2',
+                            'state' : {
+                                'opened' : true,
+                                'selected' : true
+                            },
+                            'children' : [
+                                { 'text' : 'Child 1' },
+                                'Child 2'
+                            ]
+                        },
+                        ],
+                    'xdata' : {
                         'url' : (node) => {
                             console.log('data.url: calling ' + this.url);
 
@@ -100,6 +119,7 @@ export default class extends Controller {
                             {
                                 "text json": function (dataString) {
                                     let data = JSON.parse(dataString);
+                                    console.log(data);
                                     return data['hydra:member'].map( x => {
                                         return { parent: x.parentId ?? '#', id: x.id, text: x.name };
                                     });
@@ -108,6 +128,7 @@ export default class extends Controller {
                         // dataType: 'json', // let it come back as json-ld
                         // this is the data SENT to the server
                         'data' :  (node) => {
+
                             return {...this.filter, ...{'fields': ['parentId', 'name']}};
                             // return { id : node.id }; e.g. send # if root node.  Maybe send buildingId?
                         }
@@ -144,7 +165,7 @@ export default class extends Controller {
 
         if (this.$element) {
             // this.$element.jstree(true).refresh();
-            // this.$element.jstree('open_all');
+            this.$element.jstree('open_all');
         }
         return;
 
@@ -164,5 +185,96 @@ export default class extends Controller {
 
     }
 
+    addListeners($element) {
+        console.log('adding listeners. ', $element);
+        $element
+            .on('changed.jstree', this.onChanged) // triggered when selection changes, can be multiple, data is tree data, not node data
+            .on('ready.jstree',  (e, data) => {
+
+                console.warn('ready.jstree fired, so opening_all');
+                this.$element.jstree('open_all');
+            })
+            .on('ready.jstree', function (e, data) {
+                console.warn('ready.jstree second on call.');
+            })
+            .on('loaded.jstree', () => {
+                console.warn('loaded.jstree');
+                this.$element.jstree('open_all');
+            })
+            // listen for updates
+            .on('changed.jstree', function (e, data) { // triggered when selection changes, can be multiple, data is tree data, not node data
+                const {action, node, selected, instance} = data;
+                // console.log(e.type, action, node, selected.join(','), instance);
+                var i, j, r = [], ids = [];
+                for (i = 0, j = selected.length; i < j; i++) {
+                    let node = instance.get_node(selected[i]);
+                    r.push(node.text);
+                    ids.push(node.id );
+                }
+                $('#jstree_event_log').html(data.action + ': ' + r.join(', ') + ' IDS: ' + ids.join(','));
+            })
+            .on('create_node.jstree', (e, data) => {
+                const {node, parent, position} = data;
+                let parentNode = data.instance.get_node(parent);
+                console.warn(e.type, node, parent, parentNode);
+                console.log(parentNode.id, parentNode.text);
+
+                let text = parentNode.text + '-' + (parentNode.children.length + 1);
+                node.text = text;
+
+                // parentId is null, not sure why!
+                // console.log(parent);
+
+                // var node = $('#dashboardTree').jstree(true).find('//something');
+                this.collectionApiCall(node, 'POST', {...this.options.dataWrapper, ...{
+                            code: node.id,
+                            parent: this.url + '/' + parentNode.id,
+                            name: text
+                        }}
+                    ,  (data) => {
+                        // populate the visible node with the created id and name.
+                        // node.text = data.name;
+                        // node.text = text;
+                        // node.id = data.id;
+                        // node.data('databaseId', data.id);
+                        $(e.currentTarget).jstree(true).set_id(node, data.id);
+                        console.log("New node created!", data.name);
+                        console.error(node, data);
+                    });
+            })
+            .on('rename_node.jstree', (e, data) => {
+                const {node, text, old} = data;
+                console.warn(e.type, node, text, old);
+                // if there's no databaseId, then this is really a new node.  If the title blank, we shouldn't create it
+
+                this.itemApiCall(node, 'PATCH', {name: text});
+                /*
+                if (node['data'] === null) {
+                    itemApiCall(node, 'POST', {name: text});
+                } else {
+                }
+                 */
+            })
+            .on('move_node.jstree',  (e, data)  => {
+                // https://www.jstree.com/api/#/?f=move_node.jstree
+                const {node, parent, position, old_parent, old_position, is_multi, old_instance, new_instance} = data;
+                console.log('moving', node, parent, new_instance);
+                this.itemApiCall(node, 'PATCH', {parent: this.url + '/' + parent});
+
+            })
+            .on('delete_node.jstree',  (e, data)  => {
+                var i, j, r = [];
+                const {node, parentId} = data;
+                $('#jstree_event_log').html('DELETE! ' + node.id + '/' + node.text);
+                this.itemApiCall(node, 'DELETE');
+            })
+
+        ;
+
+    }
+
+    onReady(e, data) {
+        console.warn('jstree onReady fired.');
+    }
 
 }
