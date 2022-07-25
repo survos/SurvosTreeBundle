@@ -1,0 +1,33 @@
+{
+  "name": "@survos/tree-bundle",
+  "description": "integrate php and javascript helpers for JSTree.com",
+  "license": "MIT",
+  "version": "1.0.1",
+  "symfony": {
+    "controllers": {
+      "tree": {
+        "main": "src/controllers/tree_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      },
+      "api_tree": {
+        "main": "src/controllers/api_tree_controller.js",
+        "webpackMode": "eager",
+        "fetch": "lazy",
+        "enabled": true
+      }
+    }
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": "^3.0.0"
+  },
+  "devDependencies": {
+    "@hotwired/stimulus": "^3.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bootstrap": "^5.1.3",
+    "twig": "^1.15.4"
+  }
+}
