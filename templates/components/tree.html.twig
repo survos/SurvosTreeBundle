@@ -1,43 +1,16 @@
 {# templates/components/datatable.html.twig #}
-{% set columns = this.normalizedColumns %}
-<div {{ this.stimulusController ? stimulus_controller(this.stimulusController) }}>
-<table class="table" {{ this.stimulusController ? stimulus_target(this.stimulusController, 'table') }}>
-    <thead>
-    <tr>
-        {% for c in columns %}
-            <th>
-                {{ c.title }}
-            </th>
-        {% endfor %}
-    </tr>
-    </thead>
-    <tbody>
-    {% for row in data %}
-        <tr>
-            {% for c in columns %}
-            <td>
+<div
+        {{ this.stimulusController ? stimulus_controller(this.stimulusController) }}
+>
+
+    {{ this.stimulusController }}
+    <div {{ stimulus_target(_sc, 'html') }}
+    >
 
 
-                {% if block(c.name) is defined %}
-                    {% with {row: row} %}
-                        {{ block(c.name) }}
-                    {% endwith %}
-                {% else %}
+        {% block data %}
+            data here.
+        {% endblock %}
+    </div>
 
-                    {{ attribute(row, c.name)|default() }}
-                {% endif %}
-                {#                    {% set _block = block(c)|default(false) %} #}
-                {#                    {% if _block is not empty %} #}
-                {#                        {{ _block|raw }} #}
-                {#                    {% else %} #}
-                {#                        {{ attribute(row, c) }} #}
-                {#                    {% endif %} #}
-
-                {% endfor %}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-
-</table>
 </div>

@@ -30,34 +30,16 @@ class TreeComponent
         $parameters =  $resolver->resolve($parameters);
         if (is_null($parameters['data'])) {
             $class = $parameters['class'];
-            assert($class, "Must pass class or data");
+//            assert($class, "Must pass class or data");
 
             // @todo: something clever to limit memory, use yield?
-            $parameters['data'] =  $this->registry->getRepository($class)->findAll();
+//            $parameters['data'] =  $this->registry->getRepository($class)->findAll();
         }
 //        $resolver->setAllowedValues('type', ['success', 'danger']);
 //        $resolver->setRequired('message');
 //        $resolver->setAllowedTypes('message', 'string');
             return $parameters;
 
-    }
-
-    /** @return array<string, Column> */
-    public function normalizedColumns(): iterable
-    {
-        $normalizedColumns = [];
-        foreach ($this->columns as $c) {
-            if (empty($c)) {
-                continue;
-            }
-            if (is_string($c)) {
-                $c = ['name' => $c];
-            }
-            assert(is_array($c));
-            $column = new Column(...$c);
-            $normalizedColumns[$column->name] = $column;
-        }
-        return $normalizedColumns;
     }
 
 }
