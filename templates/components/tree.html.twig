@@ -1,11 +1,9 @@
-{# templates/components/datatable.html.twig #}
-<div
-        {{ this.stimulusController ? stimulus_controller(this.stimulusController) }}
->
-
+{# templates/components/tree.html.twig #}
+{{ _self }}
+<div {{ this.stimulusController ? stimulus_controller(this.stimulusController) }}>
     {{ this.stimulusController }}
-    <div {{ stimulus_target(_sc, 'html') }}
-    >
+
+    <div {{ stimulus_target(this.stimulusController, 'html') }}>
 
 
         {% block data %}
