@@ -11,7 +11,7 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
 #[AsTwigComponent('tree', template: '@SurvosTree/components/tree.html.twig')]
 class TreeComponent
 {
-    public function __construct(private Registry $registry) {}
+    public function __construct() {}
 
     public ?iterable $data=null;
     public array $columns;

@@ -3,11 +3,8 @@
 namespace Survos\Tree\Twig;
 
 use ApiPlatform\Api\IriConverterInterface;
-use ApiPlatform\Core\Api\IriConverterInterface as LegacyIriConverterInterface;
 use ApiPlatform\Metadata\GetCollection;
-use App\Entity\Media;
 use Survos\CoreBundle\Entity\RouteParametersInterface;
-use Survos\Tree\Attribute\Crud;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
@@ -56,7 +53,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('api_table', [$this, 'apiTable'], ['needs_environment' => true, 'is_safe' => ['html']]),
 
             // survosCrudBundle?
-            new TwigFunction('browse_route', [$this, 'browseRoute']),
 
         ];
     }
@@ -128,18 +124,6 @@ class TwigExtension extends AbstractExtension
     }
 
 
-    public function browseRoute(string $class) {
-        $reflection = new \ReflectionClass($class);
-        foreach ($reflection->getAttributes(Crud::class) as $attribute) {
-            return $attribute->getArguments()['prefix'] . 'index';
-        }
-        return $class;
-        dd($reflection->getAttributes());
-        return $reflection->getAttributes();
-
-
-    }
-
 
     public function datatable(Environment $env, iterable $data, array $headers = []): string
     {
@@ -157,7 +141,7 @@ class TwigExtension extends AbstractExtension
         $attributes['apiCall'] = $this->apiCollectionRoute($class);
         $attributes['prefix'] = $class::getPrefix();
         dd($attributes);
-        $dtController = '@survos/grid-bundle/api_tree';
+        $dtController = '@survos/tree-bundle/tree';
         $controllers[$dtController] = $attributes;
 
         $html = '<div ' . $this->stimulus->renderStimulusController($env, $controllers) . ' ';

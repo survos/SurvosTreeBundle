@@ -7,12 +7,12 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use Symfony\UX\TwigComponent\Attribute\PreMount;
 use Twig\Environment;
 
-#[AsTwigComponent('api_tree', template: '@SurvosGrid/components/api_tree.html.twig')]
+#[AsTwigComponent('api_tree', template: '@SurvosTree/components/api_tree.html.twig')]
 class ApiTreeComponent
 {
     public function __construct(private Environment $twig, public ?string $stimulusController)
     {
-//        ='@survos/grid-bundle/api_tree';
+//        ='@survos/tree-bundle/api_tree';
 
     }
     public iterable $data;
@@ -45,37 +45,6 @@ class ApiTreeComponent
             }
         }
         return $customColumnTemplates;
-    }
-
-    /** @return array<int, Column> */
-    public function normalizedColumns(): iterable
-    {
-//        $normalizedColumns = parent::normalizedColumns();
-
-//        dd($customColumnTemplates);
-//        dd($template->getBlockNames());
-//        dd($template->getSourceContext());
-//        dd($template->getBlockNames());
-//        dump($this->caller);
-        $customColumnTemplates = $this->getTwigBlocks();
-        $normalizedColumns = [];
-        foreach ($this->columns as $c) {
-            if (empty($c)) {
-                continue;
-            }
-            if (is_string($c)) {
-                $c = ['name' => $c];
-            }
-            $columnName = $c['name'];
-            if (array_key_exists($columnName, $customColumnTemplates)) {
-                $c['twigTemplate'] = $customColumnTemplates[$columnName];
-            }
-            assert(is_array($c));
-            $column = new Column(...$c);
-            $normalizedColumns[] = $column;
-//            $normalizedColumns[$column->name] = $column;
-        }
-        return $normalizedColumns;
     }
 
 }

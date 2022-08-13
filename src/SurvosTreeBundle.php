@@ -33,7 +33,7 @@ class SurvosTreeBundle extends AbstractBundle
 
         if (class_exists(Environment::class) && class_exists(StimulusTwigExtension::class)) {
             $builder
-                ->setDefinition('survos.grid_bundle', new Definition(TwigExtension::class))
+                ->setDefinition('survos.tree_bundle', new Definition(TwigExtension::class))
                 ->addArgument(new Reference('serializer'))
                 ->addArgument(new Reference('serializer.normalizer.object'))
                 ->addArgument(new Reference('router.default'))
@@ -46,7 +46,6 @@ class SurvosTreeBundle extends AbstractBundle
         $builder->register(TreeComponent::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
-            ->setArgument('$registry', new Reference('doctrine'))
         ;
         $builder->register(ApiTreeComponent::class)
             ->setAutowired(true)
@@ -61,10 +60,7 @@ class SurvosTreeBundle extends AbstractBundle
         // since the configuration is short, we can add it here
         $definition->rootNode()
             ->children()
-            ->scalarNode('stimulus_controller')->defaultValue('@survos/grid-bundle/api_tree')->end()
-            ->scalarNode('widthFactor')->defaultValue(2)->end()
-            ->scalarNode('height')->defaultValue(30)->end()
-            ->scalarNode('foregroundColor')->defaultValue('green')->end()
+            ->scalarNode('stimulus_controller')->defaultValue('@survos/tree-bundle/api_tree')->end()
             ->end();
 
         ;
