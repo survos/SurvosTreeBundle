@@ -45,6 +45,7 @@ export default class extends Controller {
 
 
     configure($element) {
+        console.log($element);
         this.tree = $element
             .jstree({
                 "core": {

@@ -15,6 +15,7 @@ class TreeComponent
 
     public ?iterable $data=null;
     public array $columns;
+    public array $filter;
     public ?string $stimulusController='@survos/tree-bundle/tree';
 
     #[PreMount]
@@ -24,6 +25,7 @@ class TreeComponent
         $resolver->setDefaults([
             'data' => null,
             'class' => null,
+            'filter' => [],
             'caller' => null,
             'columns' => []
         ]);
