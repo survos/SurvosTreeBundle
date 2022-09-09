@@ -25,6 +25,7 @@ export default class extends Controller {
 
     connect() {
         super.connect(); //
+        console.warn("LOCAL to jstree-demo!! connecting "  + this.identifier);
 
         const payload = {apiCall: this.apiCallValue, options: []};
         // if (Array.isArray(payload.options) && 0 === payload.options.length) {
@@ -38,7 +39,6 @@ export default class extends Controller {
 
         this.url = this.apiCallValue;
         this.notify('hola from ' + this.identifier + ' ' + this.url);
-        console.log(this.filter);
         this.treeElement = this.ajaxTarget;
         this.$element = $(this.treeElement); // hackish
         const connectPayload = this.$element;
@@ -46,11 +46,7 @@ export default class extends Controller {
         this._dispatchEvent('apitree:connect', { msg: "before adding listeners" });
         this.addListeners(this.$element);
 
-        this._dispatchEvent('apitree:connect', { msg: "before render" });
         this.render();
-
-        this._dispatchEvent('apitree:connect', { msg: "After render" });
-
     }
 
     notify(message) {
@@ -128,7 +124,6 @@ export default class extends Controller {
                         success: function (data) {
                             // we've received the jsTree formatted data.
                             // console.warn('!!', data);
-                            console.warn('success!', data);
                         },
 
                         // api_platform calls return JSON in a certain format, but js-tree needs it in another.
@@ -139,8 +134,14 @@ export default class extends Controller {
                                     let mappedData = data['hydra:member'].map(x => {
                                         // let mappedData = data.map( x => {
                                         // @todo: make 'name' configurable!
-                                        return {parent: x.parentId ?? '#', id: x.id, text: x.name};
+                                        return {parent: x.parentId ?? '#',
+                                            my_extra: 'extra',
+                                            my_extra_array: {x: 'y'},
+                                            my_extra_array_json: JSON.stringify({a: 'b'}),
+                                            hydra: x,
+                                            data: x, id: x.id, text: x.name};
                                     });
+                                    console.log(mappedData[0].data);
                                     return mappedData;
 
                                 }
@@ -205,48 +206,72 @@ export default class extends Controller {
 
     }
 
-    onChanged(event)
-    {
-        console.error(event);
-        this._dispatchEvent('apitree.changed', {event})
-    }
+    // onChanged(event, data) {
+    //     var i, j, r = [];
+    //     let instance = data.instance;
+    //     for (i = 0, j = data.selected.length; i < j; i++) {
+    //         let node = instance.get_node(data.selected[i]);
+    //         // r.push(instance.data('path'));
+    //         console.log(node);
+    //         // instance.jstree().open(); // not sure how to do this.
+    //         this._dispatchEvent('apitree_changed', {
+    //             hydra: node.data.original.hydra,
+    //             data: node.data,
+    //             msg: event.type
+    //         });
+    //
+    //     }
+    // }
+
+            // window.dispatchEvent(new CustomEvent('apitree.changed', {
+            //         detail: {
+            //             hydra: node.data.original.hydra,
+            //             data: node.data,
+            //             msg: event.type}
+            //     }
+            // ));
+            // let jsTreeData = JSON.parse(node.data.jstree);
+            // console.warn(jsTreeData, jsTreeData.path);
+    //     }
+    // }
 
     addListeners($element) {
 
-        console.error('adding listeners. ', $element);
-        this._dispatchEvent('apitree:connect', {'x': 'y'})
         $element
-            .on('changed.jstree', (e, data) => { // triggered when selection changes, can be multiple, data is tree data, not node data
-                this.$element.jstree('open_all');
-                console.log(e);
-                // e.trigger('apitree:changed', {detail: {msg: "from trigger"}});
-                $( document ).trigger( 'apitree:changed', [ "bim", "baz" ] );
-                $( window ).trigger( 'apitree:changed', [ "bim", "baz" ] );
-
-                this.$element.trigger('apitree:changed', {detail: {msg: "from trigger"}});
-                this._dispatchEvent('apitree:changed', {msg: "changed", e, data})
-                console.warn('changed.jstree fired');
-            })
+            // .on('changed.jstree', (e, data) => { // triggered when selection changes, can be multiple, data is tree data, not node data
+            //     this.$element.jstree('open_all');
+            //     console.log(e, data);
+            //     // e.trigger('apitree:changed', {detail: {msg: "from trigger"}});
+            //     // $( document ).trigger( 'apitree:changed', [ "bim", "baz" ] );
+            //     // $( window ).trigger( 'apitree:changed', [ "bim", "baz" ] );
+            //
+            //     // this.$element.trigger('apitree:changed', {detail: {msg: "from trigger"}});
+            //     // this._dispatchEvent('apitree:changed', {msg: "changed", e, data})
+            //     // this._dispatchEvent('apitree_changed', {msg: "changed", e, data})
+            //     // console.warn('changed.jstree fired');
+            // })
             .on('ready.jstree', (e, data) => {
-
-                console.warn('ready.jstree fired, so opening_all');
+                console.log('ready.jstree', data);
+                // the event.type is ready, not ready.jstree
+                this._dispatchEvent(e.type + '.jstree', {msg: e.type, e, d: data})
                 this.$element.jstree('open_all');
             })
-            .on('ready.jstree', function (e, data) {
-                console.warn('ready.jstree second on call.');
-            })
-            .on('loaded.jstree', () => {
-                console.warn('loaded.jstree');
-                this.$element.jstree('open_all');
+            .on('loaded.jstree', (e, data) => {
+                this.$element.jstree('open_all'); // ??
             })
             // listen for updates
             .on('changed.jstree',  (e, data) => { // triggered when selection changes, can be multiple, data is tree data, not node data
                 const {action, node, selected, instance} = data;
-                this._dispatchEvent('apitree:changed', {msg: "another changed event", e, data})
                 // console.log(e.type, action, node, selected.join(','), instance);
                 var i, j, r = [], ids = [];
                 for (i = 0, j = selected.length; i < j; i++) {
                     let node = instance.get_node(selected[i]);
+                    // @todo: handle checkboxes by sending all selected nodes in a single call.
+                    this._dispatchEvent('apitree_changed', {
+                        msg: "change " + node.text,
+                        hydra: node.original.hydra,
+                        data: node.original.data, original: node.original
+                    })
                     r.push(node.text);
                     ids.push(node.id);
                 }
@@ -358,6 +383,7 @@ export default class extends Controller {
     // @todo: move to ts
     _dispatchEvent(name, payload) {
 
+        // name = 'jstree';
         let ev = new CustomEvent(name, { detail: payload });
         Object.defineProperty(ev, 'target', {writable: false, value: window});
         // let ev = new Event(name, { detail: payload });
