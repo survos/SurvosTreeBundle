@@ -19,6 +19,8 @@ class ApiTreeComponent
     public array $columns = [];
     public ?string $caller=null;
     public string $class;
+    public string $labelField;
+
     public array $filter = [];
 
     private function getTwigBlocks(): iterable
