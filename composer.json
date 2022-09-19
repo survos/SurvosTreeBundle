@@ -23,7 +23,7 @@
         "symfony/http-kernel": "^6.1.0",
         "symfony/options-resolver": "^6.1.0",
         "symfony/ux-twig-component": "^2.2",
-        "tacman/twig-tree-tag": "^2.0",
+        "tacman/twig-tree-tag": "^v3.0.0",
         "twig/twig": "^3.4"
     },
     "autoload": {
