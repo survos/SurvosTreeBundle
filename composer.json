@@ -2,11 +2,8 @@
     "name": "survos/tree-bundle",
     "description": "incorporate jstre, using twig and stimulus and api-platform",
     "keywords": ["symfony-ux", "symfony6"],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "type": "symfony-bundle",
     "license": "MIT",
-
     "authors": [
         {
             "name": "Tac Tacelosky",
@@ -19,7 +16,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.12",
         "doctrine/persistence": "^2.0 || ^3.0",
-        "survos/core-bundle": "*",
+        "survos/core-bundle": "^1.2.2",
         "survos/inspection-bundle": "^1.0",
         "symfony/config": "^6.1.0",
         "symfony/dependency-injection": "^6.1.0",
@@ -53,7 +50,13 @@
         "symfony/twig-bundle": "^6.1.0",
         "symfony/var-dumper": "^6.1.0",
         "symfony/webpack-encore-bundle": "^1.11"
-    }
-
-
+    },
+    "conflict": {
+        "survos/barcode-bundle": "<1.2.2",
+        "survos/second-package": "<1.2.2",
+        "survos/faker-bundle": "<1.2.2",
+        "survos/first-package": "<1.2.2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
