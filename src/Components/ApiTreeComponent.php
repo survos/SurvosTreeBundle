@@ -10,15 +10,21 @@ use Twig\Environment;
 #[AsTwigComponent('api_tree', template: '@SurvosTree/components/api_tree.html.twig')]
 class ApiTreeComponent
 {
-    public function __construct(private Environment $twig, public ?string $stimulusController)
-    {
-//        ='@survos/tree-bundle/api_tree';
-
+    public function __construct(
+        private Environment $twig,
+        public ?string $stimulusController
+    ) {
+        //        ='@survos/tree-bundle/api_tree';
     }
+
     public iterable $data;
+
     public array $columns = [];
-    public ?string $caller=null;
+
+    public ?string $caller = null;
+
     public string $class;
+
     public string $labelField;
 
     public array $filter = [];
@@ -48,5 +54,4 @@ class ApiTreeComponent
         }
         return $customColumnTemplates;
     }
-
 }

@@ -3,10 +3,10 @@
 namespace Survos\Tree\Traits;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Traits\NestedSetEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 trait TreeTrait
 {
@@ -16,8 +16,11 @@ trait TreeTrait
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(referencedColumnName: 'id', onDelete: 'CASCADE')]
     protected $parent;
+
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    #[ORM\OrderBy(['left' => 'ASC'])]
+    #[ORM\OrderBy([
+        'left' => 'ASC',
+    ])]
     private $children;
 
     #[Gedmo\TreeRoot]
@@ -33,18 +36,14 @@ trait TreeTrait
         return $this->parent;
     }
 
-
     public function setParent(?self $parent): self
     {
-
         $this->parent = $parent;
 
         return $this;
     }
 
-    /**
-     * @return Collection
-     */
+
     public function getChildren(): Collection
     {
         return $this->children;
@@ -52,7 +51,7 @@ trait TreeTrait
 
     public function addChild(self $child): self
     {
-        if (!$this->children->contains($child)) {
+        if (! $this->children->contains($child)) {
             $this->children[] = $child;
             $child->setParent($this);
         }
@@ -87,6 +86,4 @@ trait TreeTrait
     {
         return $this->level;
     }
-
-
 }

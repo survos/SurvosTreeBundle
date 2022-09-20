@@ -11,12 +11,17 @@ use Symfony\UX\TwigComponent\Attribute\PreMount;
 #[AsTwigComponent('tree', template: '@SurvosTree/components/tree.html.twig')]
 class TreeComponent
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
-    public ?iterable $data=null;
+    public ?iterable $data = null;
+
     public array $columns;
+
     public array $filter;
-    public ?string $stimulusController='@survos/tree-bundle/tree';
+
+    public ?string $stimulusController = '@survos/tree-bundle/tree';
 
     #[PreMount]
     public function preMount(array $parameters = []): array
@@ -27,21 +32,19 @@ class TreeComponent
             'class' => null,
             'filter' => [],
             'caller' => null,
-            'columns' => []
+            'columns' => [],
         ]);
-        $parameters =  $resolver->resolve($parameters);
+        $parameters = $resolver->resolve($parameters);
         if (is_null($parameters['data'])) {
             $class = $parameters['class'];
-//            assert($class, "Must pass class or data");
+            //            assert($class, "Must pass class or data");
 
             // @todo: something clever to limit memory, use yield?
-//            $parameters['data'] =  $this->registry->getRepository($class)->findAll();
+            //            $parameters['data'] =  $this->registry->getRepository($class)->findAll();
         }
-//        $resolver->setAllowedValues('type', ['success', 'danger']);
-//        $resolver->setRequired('message');
-//        $resolver->setAllowedTypes('message', 'string');
-            return $parameters;
-
+        //        $resolver->setAllowedValues('type', ['success', 'danger']);
+        //        $resolver->setRequired('message');
+        //        $resolver->setAllowedTypes('message', 'string');
+        return $parameters;
     }
-
 }
