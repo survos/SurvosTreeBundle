@@ -1,5 +1,6 @@
 // during dev, from project_dir run
-// ln -s ~/survos/bundles/tree-bundle/assets/src/controllers/sandbox_api_controller.js assets/controllers/sandbox_api_controller.js
+// ls ~/g/survos/survos/packages/tree-bundle/assets/src/controllers/sandbox_api_tree_controller.js
+// ln -s ~/g/survos/survos/packages/tree-bundle/assets/src/controllers/sandbox_api_tree_controller.js assets/controllers/sandbox_api_tree_controller.js
 import {Controller} from "@hotwired/stimulus";
 import {default as axios} from "axios";
 // const $ = window.jQuery; // require('jquery');
@@ -33,7 +34,6 @@ export default class extends Controller {
         // }
 
         this._dispatchEvent('apitree:pre-connect', { options: payload });
-
 
         this.filter = JSON.parse(this.filterValue);
 
@@ -131,9 +131,16 @@ export default class extends Controller {
                             {
                                 "text json": function (dataString) {
                                     let data = JSON.parse(dataString);
+                                    let seen = [];
                                     let mappedData = data['hydra:member'].map(x => {
                                         // let mappedData = data.map( x => {
                                         // @todo: make 'name' configurable!
+                                        console.log(x.parentId, seen, seen.indexOf(x.parentId));
+                                        if (x.parentId) {
+                                            console.assert(seen.indexOf(x.parentId) !== -1, "missing parent id!");
+                                        }
+                                        seen.push(x.id);
+
                                         return {parent: x.parentId ?? '#',
                                             my_extra: 'extra',
                                             my_extra_array: {x: 'y'},
@@ -141,7 +148,7 @@ export default class extends Controller {
                                             hydra: x,
                                             data: x, id: x.id, text: x.name};
                                     });
-                                    console.log(mappedData[0].data);
+                                    console.log(mappedData.length + ' total rows, first is...', mappedData[0].data);
                                     return mappedData;
 
                                 }
@@ -164,7 +171,7 @@ export default class extends Controller {
                 // "plugins" : [ "search", "state", "types", "wholerow" ]
                 "plugins": ["contextmenu", "dnd", "search", "state", "types", "wholerow"]
             })
-            .on('xxready.jstree', (e, data) => {
+            .on('ready.jstree', (e, data) => {
                 console.warn($(e.currentTarget).attr('id'))
                 console.warn(e, e.currentTarget, 'ready.jstree (configuration)');
                 // $(e.currentTarget).jstree.open_all();
@@ -185,6 +192,7 @@ export default class extends Controller {
         // this.$element.jstree(true).settings.core.data = ['New Data'];
 
         if (this.$element) {
+            console.warn('calling open_all');
             // this.$element.jstree(true).refresh();
             this.$element.jstree('open_all');
         }
@@ -223,15 +231,15 @@ export default class extends Controller {
     //     }
     // }
 
-            // window.dispatchEvent(new CustomEvent('apitree.changed', {
-            //         detail: {
-            //             hydra: node.data.original.hydra,
-            //             data: node.data,
-            //             msg: event.type}
-            //     }
-            // ));
-            // let jsTreeData = JSON.parse(node.data.jstree);
-            // console.warn(jsTreeData, jsTreeData.path);
+    // window.dispatchEvent(new CustomEvent('apitree.changed', {
+    //         detail: {
+    //             hydra: node.data.original.hydra,
+    //             data: node.data,
+    //             msg: event.type}
+    //     }
+    // ));
+    // let jsTreeData = JSON.parse(node.data.jstree);
+    // console.warn(jsTreeData, jsTreeData.path);
     //     }
     // }
 
@@ -262,7 +270,7 @@ export default class extends Controller {
             // listen for updates
             .on('changed.jstree',  (e, data) => { // triggered when selection changes, can be multiple, data is tree data, not node data
                 const {action, node, selected, instance} = data;
-                // console.log(e.type, action, node, selected.join(','), instance);
+                console.warn(e.type, action, selected.join(','));
                 var i, j, r = [], ids = [];
                 for (i = 0, j = selected.length; i < j; i++) {
                     let node = instance.get_node(selected[i]);
