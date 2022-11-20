@@ -135,7 +135,7 @@ export default class extends Controller {
                                     let mappedData = data['hydra:member'].map(x => {
                                         // let mappedData = data.map( x => {
                                         // @todo: make 'name' configurable!
-                                        console.log(x.parentId, seen, seen.indexOf(x.parentId));
+                                        // console.log(x.parentId, seen, seen.indexOf(x.parentId));
                                         if (x.parentId) {
                                             console.assert(seen.indexOf(x.parentId) !== -1, "missing parent id!");
                                         }
