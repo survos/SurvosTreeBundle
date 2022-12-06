@@ -57,6 +57,41 @@ export default class extends Controller {
     configure($element) {
         this.tree = $element
             .jstree({
+
+                'contextmenu' : {
+                    'items' : function(node) {
+                        var tmp = $.jstree.defaults.contextmenu.items();
+                        delete tmp.create.action;
+                        tmp.create.label = "New";
+                        tmp.create.submenu = {
+                            "create_folder" : {
+                                "separator_after"	: true,
+                                "label"				: "Folder",
+                                "action"			: function (data) {
+                                    var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                    inst.create_node(obj, { type : "default" }, "last", function (new_node) {
+                                        setTimeout(function () { inst.edit(new_node); },0);
+                                    });
+                                }
+                            },
+                            "create_file" : {
+                                "label"				: "File",
+                                "action"			: function (data) {
+                                    var inst = $.jstree.reference(data.reference),
+                                        obj = inst.get_node(data.reference);
+                                    inst.create_node(obj, { type : "file" }, "last", function (new_node) {
+                                        setTimeout(function () { inst.edit(new_node); },0);
+                                    });
+                                }
+                            }
+                        };
+                        if(this.get_type(node) === "file") {
+                            delete tmp.create;
+                        }
+                        return tmp;
+                    }
+                },
                 "core": {
                     animation: 0,
                     // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node', 'copy_node' or 'edit'
