@@ -1,7 +1,10 @@
 {
     "name": "survos/tree-bundle",
     "description": "incorporate jstree, using twig and stimulus and api-platform",
-    "keywords": ["symfony-ux", "symfony6"],
+    "keywords": [
+        "symfony-ux",
+        "symfony6"
+    ],
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -17,8 +20,8 @@
         "doctrine/orm": "^2.12",
         "doctrine/persistence": "^2.0 || ^3.0",
         "stof/doctrine-extensions-bundle": "^1.7",
-        "survos/core-bundle": "^1.5",
-        "survos/inspection-bundle": "^1.5",
+        "survos/core-bundle": "^1.4.17",
+        "survos/inspection-bundle": "^1.4.17",
         "symfony/config": "^6.1.0",
         "symfony/dependency-injection": "^6.1.0",
         "symfony/http-kernel": "^6.1.0",
