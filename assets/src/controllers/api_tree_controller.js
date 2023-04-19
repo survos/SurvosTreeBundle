@@ -117,7 +117,6 @@ export default class extends Controller {
                     'data': {
                         url: (node) => {
                             console.log('data.url: calling ' + this.url);
-
                             // @todo: add params to node
                             return this.url; // + '.json'; // or set this in api_platform routes?
                         },

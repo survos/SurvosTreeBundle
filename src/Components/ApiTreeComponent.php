@@ -25,6 +25,8 @@ class ApiTreeComponent
 
     public string $class;
 
+    public string $apiUrl;
+
     public string $labelField;
 
     public array $filter = [];
@@ -53,5 +55,10 @@ class ApiTreeComponent
             }
         }
         return $customColumnTemplates;
+    }
+
+    public function getApiUrl(): string
+    {
+        return $this->apiUrl;
     }
 }
