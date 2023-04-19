@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Tree\Traits\NestedSetEntity;
+use Survos\Tree\TreeInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 trait TreeTrait
@@ -18,9 +19,7 @@ trait TreeTrait
     protected $parent;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
-    #[ORM\OrderBy([
-        'left' => 'ASC',
-    ])]
+    #[ORM\OrderBy(['left' => 'ASC'])]
     private $children;
 
     #[Gedmo\TreeRoot]
@@ -36,7 +35,7 @@ trait TreeTrait
         return $this->parent;
     }
 
-    public function setParent(?self $parent): self
+    public function setParent(?TreeInterface $parent): self
     {
         $this->parent = $parent;
 
@@ -49,7 +48,7 @@ trait TreeTrait
         return $this->children;
     }
 
-    public function addChild(self $child): self
+    public function addChild(TreeInterface $child): self
     {
         if (! $this->children->contains($child)) {
             $this->children[] = $child;
@@ -59,7 +58,7 @@ trait TreeTrait
         return $this;
     }
 
-    public function removeChild(self $child): self
+    public function removeChild(TreeInterface $child): self
     {
         if ($this->children->removeElement($child)) {
             // set the owning side to null (unless already changed)
