@@ -42,6 +42,12 @@ class SurvosTreeBundle extends AbstractBundle
             ->setAutowired(true)
             ->setAutoconfigured(true)
         ;
+
+        $builder->register(TreeInterface::class)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+        ;
+
         $builder->register(ApiTreeComponent::class)
             ->setAutowired(true)
             ->setAutoconfigured(true)
