@@ -33,7 +33,7 @@ class SurvosTreeBundle extends AbstractBundle
         if (class_exists(Environment::class) && class_exists(StimulusTwigExtension::class)) {
             $builder
                 ->setDefinition('survos.tree_bundle', new Definition(TwigExtension::class))
-                ->addArgument(new Reference('webpack_encore.twig_stimulus_extension'))
+                ->addArgument(new Reference('webpack_encore.twig_entry_files_extension'))
                 ->addTag('twig.extension')
                 ->setPublic(false);
         }

@@ -20,15 +20,16 @@
         "doctrine/orm": "^2.12",
         "doctrine/persistence": "^2.0 || ^3.0",
         "stof/doctrine-extensions-bundle": "^1.7",
-        "survos/core-bundle": "^1.4.83",
-        "survos/inspection-bundle": "^1.4.83",
+        "survos/core-bundle": "^1.4",
+        "survos/inspection-bundle": "^1.4",
         "symfony/config": "^6.1.0",
         "symfony/dependency-injection": "^6.1.0",
         "symfony/http-kernel": "^6.1.0",
         "symfony/options-resolver": "^6.1.0",
         "symfony/ux-twig-component": "^2.8",
         "tacman/twig-tree-tag": "^3.0.1",
-        "twig/twig": "^3.4"
+        "twig/twig": "^3.4",
+        "symfony/stimulus-bundle": "^2.9"
     },
     "autoload": {
         "psr-4": {
