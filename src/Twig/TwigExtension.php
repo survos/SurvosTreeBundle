@@ -21,7 +21,6 @@ use function Symfony\Component\String\u;
 class TwigExtension extends AbstractExtension
 {
     public function __construct(
-        private StimulusTwigExtension $stimulus
     ) {
     }
 

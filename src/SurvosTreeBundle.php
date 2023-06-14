@@ -2,7 +2,6 @@
 
 namespace Survos\Tree;
 
-use JordanLev\TwigTreeTag\Twig\Extension\TreeExtension; // ??
 use Survos\Tree\Components\ApiTreeComponent;
 use Survos\Tree\Components\TreeComponent;
 use Survos\Tree\Twig\TwigExtension;
@@ -24,16 +23,17 @@ class SurvosTreeBundle extends AbstractBundle
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $builder
-            ->setDefinition('jordanlev.tree_extension', new Definition(TreeExtension::class))
-            ->addTag('twig.extension')
-            ->setPublic(false)
-        ;
+        // this should have been moved to inside this bundle
+//        $builder
+//            ->setDefinition('jordanlev.tree_extension', new Definition(TreeExtension::class))
+//            ->addTag('twig.extension')
+//            ->setPublic(false)
+//        ;
 
         if (class_exists(Environment::class) && class_exists(StimulusTwigExtension::class)) {
             $builder
                 ->setDefinition('survos.tree_bundle', new Definition(TwigExtension::class))
-                ->addArgument(new Reference('webpack_encore.twig_entry_files_extension'))
+//                ->addArgument(new Reference('webpack_encore.twig_entry_files_extension'))
                 ->addTag('twig.extension')
                 ->setPublic(false);
         }
