@@ -2,7 +2,7 @@
 
 namespace Survos\Tree\Twig;
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\MetaData\IriConverterInterface;
 use ApiPlatform\Metadata\GetCollection;
 use Survos\CoreBundle\Entity\RouteParametersInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
