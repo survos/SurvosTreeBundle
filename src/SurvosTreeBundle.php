@@ -2,6 +2,7 @@
 
 namespace Survos\Tree;
 
+use Survos\CoreBundle\Traits\HasAssetMapperTrait;
 use Survos\Tree\Components\ApiTreeComponent;
 use Survos\Tree\Components\TreeComponent;
 use Survos\Tree\Twig\TwigExtension;
@@ -9,31 +10,26 @@ use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\WebpackEncoreBundle\Twig\StimulusTwigExtension;
 use Twig\Environment;
+use JordanLev\TwigTreeTag\Twig\Extension\TreeExtension;
 
 class SurvosTreeBundle extends AbstractBundle
 {
+    use HasAssetMapperTrait;
     // $config is the bundle Configuration that you usually process in ExtensionInterface::load() but already merged and processed
-    /**
-     * @param array<mixed> $config
-     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        // this should have been moved to inside this bundle
-//        $builder
-//            ->setDefinition('jordanlev.tree_extension', new Definition(TreeExtension::class))
-//            ->addTag('twig.extension')
-//            ->setPublic(false)
-//        ;
-
-        if (class_exists(Environment::class) && class_exists(StimulusTwigExtension::class)) {
+        // enabled the {% tree %} tag
+        $builder
+            ->setDefinition('jordanlev.tree_extension', new Definition(TreeExtension::class))
+            ->addTag('twig.extension')
+            ->setPublic(false)
+        ;
+        // add the  twig function?
+        if (class_exists(Environment::class)) {
             $builder
                 ->setDefinition('survos.tree_bundle', new Definition(TwigExtension::class))
-//                ->addArgument(new Reference('webpack_encore.twig_entry_files_extension'))
                 ->addTag('twig.extension')
                 ->setPublic(false);
         }
@@ -60,22 +56,28 @@ class SurvosTreeBundle extends AbstractBundle
         // since the configuration is short, we can add it here
         $definition->rootNode()
             ->children()
-            ->scalarNode('stimulus_controller')->defaultValue('@survos/tree-bundle/api_tree')->end()
+            ->scalarNode('stimulus_controller')->defaultValue('@survos/tree-bundle/tree')->end()
             ->end();
 
         ;
     }
 
+
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        //        $configs = $builder->getExtensionConfig('api_platform');
+        if (!$this->isAssetMapperAvailable($builder)) {
+            return;
+        }
 
-        // https://stackoverflow.com/questions/72507212/symfony-6-1-get-another-bundle-configuration-data/72664468#72664468
-        //        // iterate in reverse to preserve the original order after prepending the config
-        //        foreach (array_reverse($configs) as $config) {
-        //            $container->prependExtensionConfig('my_maker', [
-        //                'root_namespace' => $config['root_namespace'],
-        //            ]);
-        //        }
+        $dir = realpath(__DIR__.'/../assets/');
+        assert(file_exists($dir), $dir);
+
+        $builder->prependExtensionConfig('framework', [
+            'asset_mapper' => [
+                'paths' => [
+                    $dir => '@survos/tree',
+                ],
+            ],
+        ]);
     }
 }

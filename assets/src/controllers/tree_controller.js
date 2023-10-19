@@ -26,12 +26,14 @@ export default class extends Controller {
         //     this.html(this.htmlTarget);
         // }
         console.log('hello from ' + this.identifier);
+        // if no target, then the controller is on the ul element
         // this.element.textContent = msg;
-        if (this.hasHtmlTarget) {
-            this.html(this.htmlTarget);
-        } else {
-            console.error('Warning: no HTML target, so not rendered.');
+        let el = this.element;
+        if (!this.hasHtmlTarget) {
+            // @todo: handle just the controller
+            el = this.htmlTarget;
         }
+        this.html(el);
 
         // window.addEventListener('jstree', (ev, data) => {
         //     console.log("Event received", ev.type);
@@ -65,7 +67,7 @@ export default class extends Controller {
             console.log(node.data.path);
             // instance.jstree().open(); // not sure how to do this.
                     // the event.type is ready, not ready.jstree
-            this._dispatchEvent(event.type + '.jstree', {msg: e.type, e, d: data})
+            // this._dispatchEvent(event.type + '.jstree', {msg: event.type, event, d: data})
 
             // window.dispatchEvent(new CustomEvent('jstree', {
             //         detail: {
@@ -83,10 +85,8 @@ export default class extends Controller {
 
     html(el) {
         // jQuery.tree.reference(el );
-        this.$element = $(el);
+        this.$element = jQuery(el);
         // this.$element = jQuery.jstree.reference(el);
-        console.error(this.$element);
-        console.error(this.pluginsValue);
         this.$element.jstree(
             {
                 "plugins": this.pluginsValue,

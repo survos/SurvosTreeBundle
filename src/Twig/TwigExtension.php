@@ -2,7 +2,7 @@
 
 namespace Survos\Tree\Twig;
 
-use ApiPlatform\MetaData\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use ApiPlatform\Metadata\GetCollection;
 use Survos\CoreBundle\Entity\RouteParametersInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -30,7 +30,7 @@ class TwigExtension extends AbstractExtension
             // If your filter generates SAFE HTML, you should add a third
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
-            new TwigFilter('datatable', [$this, 'datatable'], [
+            new TwigFilter('jstree', [$this, 'jstree'], [
                 'needs_environment' => true,
                 'is_safe' => ['html'],
             ]),

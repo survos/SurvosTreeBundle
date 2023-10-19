@@ -1,8 +1,8 @@
 {
-  "name": "@survos/tree-bundle",
+  "name": "@survos/tree",
   "description": "integrate php and javascript helpers for JSTree.com",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "symfony": {
     "controllers": {
       "tree": {
@@ -19,15 +19,20 @@
       }
     }
   },
+
+  "importmap": {
+    "@hotwired/stimulus": "^3.2.2",
+    "jstree": "^3.3.7"
+  },
   "peerDependencies": {
-    "@hotwired/stimulus": "^3.0.0"
+    "@hotwired/stimulus": "^3.2.2"
   },
   "devDependencies": {
-    "@hotwired/stimulus": "^3.0.0"
+    "@hotwired/stimulus": "^3.2.2"
   },
   "dependencies": {
-    "axios": "^0.27.2",
-    "bootstrap": "^5.1.3",
-    "twig": "^1.15.4"
+    "axios": "^1.5.1"
   }
 }
+
+
