@@ -31,6 +31,52 @@ The `{% tree %}` tag works almost like `{% for %}`, but inside a `{% tree %}` yo
 
 ```
 
+```bash
+symfony new tree-demo --webapp --version=next --php=8.2 && cd tree-demo
+composer config minimum-stability dev
+composer config extra.symfony.allow-contrib true
+composer req symfony/asset-mapper:^6.4 symfony/stimulus-bundle:2.x-dev survos/tree-bundle
+bin/console make:controller Tree -i
+cat > templates/tree.html.twig <<END
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% set food = [
+        {name: 'fruit', children: [
+            {name: 'apple', children: [
+                {name: 'Granny Smith'},
+                {name: 'Gala'},
+                {name: 'Fuji'},
+            ]},
+            {name: 'banana'}
+        ]},
+        {name: 'veggies', children: [
+            {name: 'peas'},
+            {name: 'carrots'},
+            {name: 'beets'}
+        ]},
+
+    ] %}
+
+    <h2>Food Tree</h2>
+    {% set _sc = '@survos/tree-bundle/tree' %}
+<div {{ stimulus_controller(_sc) }} {{ stimulus_target(_sc, 'html') }}>
+    {% tree item in food %}
+        {% if treeloop.first %}<ul>{% endif %}
+        <li>
+            {{ item.name }}
+            {% subtree item.children|default([]) %}
+        </li>
+        {% if treeloop.last %}</ul>{% endif %}
+    {% endtree %}
+</div>
+{% endblock %}
+
+END
+symfony server:start -d
+symfony open:local --path=/tree
+```
+
+
 
 ## Issue with AutoImport
 
