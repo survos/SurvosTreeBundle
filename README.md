@@ -36,6 +36,7 @@ symfony new tree-demo --webapp --version=next --php=8.2 && cd tree-demo
 composer config minimum-stability dev
 composer config extra.symfony.allow-contrib true
 composer req symfony/asset-mapper:^6.4 symfony/stimulus-bundle:2.x-dev survos/tree-bundle
+
 bin/console make:controller Tree -i
 cat > templates/tree.html.twig <<END
 {% extends 'base.html.twig' %}
