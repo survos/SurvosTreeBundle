@@ -8,6 +8,15 @@
 >
     <div {{ stimulus_target(this.stimulusController, 'message') }}>Messages go here.</div>
 
+    <h3>Html</h3>
+    <ol {{ stimulus_target(this.stimulusController, 'html') }}>
+        <li>
+            Html tree here?
+
+        </li>
+    </ol>
+
+    <h3>Ajax</h3>
     <ol {{ stimulus_target(this.stimulusController, 'ajax') }}>
         Ajax tree will be populated here.
     </ol>
