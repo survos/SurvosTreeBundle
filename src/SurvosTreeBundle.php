@@ -21,11 +21,12 @@ class SurvosTreeBundle extends AbstractBundle
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         // enabled the {% tree %} tag
-        $builder
+        $x = $builder
             ->setDefinition('jordanlev.tree_extension', new Definition(TreeExtension::class))
             ->addTag('twig.extension')
-            ->setPublic(false)
+            ->setPublic(true)
         ;
+
         // add the  twig function?
         if (class_exists(Environment::class)) {
             $builder
