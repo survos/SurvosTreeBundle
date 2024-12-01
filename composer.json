@@ -15,7 +15,7 @@
     "type": "symfony-bundle",
     "require": {
         "php": "^8.3",
-        "api-platform/core": "^3.2",
+        "api-platform/core": "^3.2||^4.0",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/orm": "^2.12",
         "doctrine/persistence": "^2.0 || ^3.0",
