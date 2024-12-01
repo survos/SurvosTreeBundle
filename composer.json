@@ -45,7 +45,7 @@
             "Survos\\Tree\\": "src/"
         }
     },
-    "autoload=dev": {
+    "autoload-dev": {
         "psr-4": {
             "Survos\\Tree\\Tests\\": "tests/"
         }
