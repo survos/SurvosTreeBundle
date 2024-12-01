@@ -44,6 +44,11 @@
             "Survos\\Tree\\": "src/"
         }
     },
+    "autoload=dev": {
+        "psr-4": {
+            "Survos\\Tree\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.4-dev"
