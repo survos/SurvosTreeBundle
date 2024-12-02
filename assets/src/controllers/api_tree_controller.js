@@ -130,14 +130,14 @@ export default class extends Controller {
                             {
                                 "text json": function (dataString) {
                                     let data = JSON.parse(dataString);
-                                    let mappedData = data['hydra:member'].map(x => {
+                                    let mappedData = data['member'].map(x => {
                                         // let mappedData = data.map( x => {
                                         // @todo: make 'name' configurable!
                                         return {parent: x.parentId ?? '#',
                                             my_extra: 'extra',
                                             my_extra_array: {x: 'y'},
                                             my_extra_array_json: JSON.stringify({a: 'b'}),
-                                            hydra: x,
+                                             x,
                                             data: x, id: x.id, text: x.name};
                                     });
                                     console.log(mappedData[0].data);
@@ -214,7 +214,7 @@ export default class extends Controller {
     //         console.log(node);
     //         // instance.jstree().open(); // not sure how to do this.
     //         this._dispatchEvent('apitree_changed', {
-    //             hydra: node.data.original.hydra,
+    //              node.data.original.hydra,
     //             data: node.data,
     //             msg: event.type
     //         });
@@ -224,7 +224,7 @@ export default class extends Controller {
 
             // window.dispatchEvent(new CustomEvent('apitree.changed', {
             //         detail: {
-            //             hydra: node.data.original.hydra,
+            //              node.data.original.hydra,
             //             data: node.data,
             //             msg: event.type}
             //     }
@@ -268,7 +268,7 @@ export default class extends Controller {
                     // @todo: handle checkboxes by sending all selected nodes in a single call.
                     this._dispatchEvent('apitree_changed', {
                         msg: "change " + node.text,
-                        hydra: node.original.hydra,
+                         node.original.hydra,
                         data: node.original.data, original: node.original
                     })
                     r.push(node.text);
