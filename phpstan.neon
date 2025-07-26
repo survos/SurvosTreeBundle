@@ -4,13 +4,11 @@ parameters:
     paths:
         - ./src/
         - ./tests/
-        - ./vendor
 
     excludePaths:
 #      - 'src/Resources/skeleton'
 #      - */cache/*
        analyse:
-                  - ./vendor
 
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
