@@ -16,11 +16,11 @@ trait TreeTrait
     #[Gedmo\TreeParent]
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(referencedColumnName: 'id', onDelete: 'CASCADE')]
-    protected $parent;
+    public $parent;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     #[ORM\OrderBy(['left' => 'ASC'])]
-    private $children;
+    public $children;
 
     #[Gedmo\TreeRoot]
     #[ORM\ManyToOne(targetEntity: self::class)]
