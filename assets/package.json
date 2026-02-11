@@ -22,11 +22,12 @@
 
   "importmap": {
     "@hotwired/stimulus": "^3.2.2",
-    "jquery": "^3.7.1",
-    "jstree": "^3.3.7"
+    "jquery": "^4.0.0",
+    "@tacman1123/jstree-esm": "^3.4.0"
   },
   "peerDependencies": {
-    "jquery": "^3.7.1",
+    "jquery": "^4.0.0",
+    "@tacman1123/jstree-esm": "^3.4.0",
     "@hotwired/stimulus": "^3.2.2"
   },
   "devDependencies": {
@@ -36,5 +37,4 @@
     "axios": "^1.5.1"
   }
 }
-
 

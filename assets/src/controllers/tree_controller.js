@@ -2,7 +2,7 @@
 
 import {Controller} from "@hotwired/stimulus";
 import jQuery from 'jquery';
-import 'jstree';
+import '@tacman1123/jstree-esm/jquery-plugin';
 
 export default class extends Controller {
 

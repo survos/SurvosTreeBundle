@@ -5,7 +5,9 @@ import {default as axios} from "axios";
 // const $ = window.jQuery; // require('jquery');
 // require('jstree');
 import jQuery from 'jquery';
-import 'jstree';
+import '@tacman1123/jstree-esm/jquery-plugin';
+
+const $ = jQuery;
 
 // import $ from 'jquery'; // for jstree
 // let $ = global.$;
