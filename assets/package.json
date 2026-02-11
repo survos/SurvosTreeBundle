@@ -23,18 +23,16 @@
   "importmap": {
     "@hotwired/stimulus": "^3.2.2",
     "jquery": "^4.0.0",
-    "@tacman1123/jstree-esm": "^3.4.0"
+    "@tacman1123/jstree-esm": "^4.0.0"
   },
   "peerDependencies": {
+    "@hotwired/stimulus": "^3.2.2",
     "jquery": "^4.0.0",
-    "@tacman1123/jstree-esm": "^3.4.0",
-    "@hotwired/stimulus": "^3.2.2"
+    "@tacman1123/jstree-esm": "^4.0.0"
   },
   "devDependencies": {
-    "@hotwired/stimulus": "^3.2.2"
-  },
-  "dependencies": {
-    "axios": "^1.5.1"
+    "@hotwired/stimulus": "^3.2.2",
+    "jquery": "^4.0.0",
+    "@tacman1123/jstree-esm": "^4.0.0"
   }
 }
-

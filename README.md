@@ -7,6 +7,29 @@ Wrapper for jstree using ApiPlatform.  Also includes a {% tree %} twig tag.
 * A stimulus controller that calls the jstree javascript library
 * Some helpers to integrate with ApiPlatform for editing and creating tree nodes.
 
+## jsTree plugins in this bundle
+
+jsTree's built-in plugins are included in the main jsTree distribution, so you do not install each plugin separately.
+
+Common built-ins include:
+
+- `search`
+- `checkbox`
+- `types`
+- `sort`
+- `state`
+- `dnd`
+- `contextmenu`
+- `wholerow`
+
+The default `tree_controller` now enables `search` by default (`checkbox`, `search`, `types`, `sort`).
+
+### Which plugins use AJAX?
+
+- `search`: only if you configure `search.ajax`
+- `massload`: yes (by design)
+- most others are client-side only
+
 In addition to the above, the has a dependency on stof/doctrine-extensions-bundle to make doctrine entities hierarchical.
 
 ```bash

@@ -2,6 +2,20 @@
 <div {{ this.stimulusController ? stimulus_controller(this.stimulusController, {
     filter: this.filter
 }) }}>
+    <div class="mb-2 d-flex gap-2">
+        <input
+                type="search"
+                class="form-control"
+                placeholder="Search tree..."
+                {{ stimulus_target(this.stimulusController, 'search') }}
+                {{ stimulus_action(this.stimulusController, 'search', 'input') }}
+        />
+        <button
+                type="button"
+                class="btn btn-outline-secondary"
+                {{ stimulus_action(this.stimulusController, 'clearSearch') }}
+        >Clear</button>
+    </div>
     <div {{ stimulus_target(this.stimulusController, 'html') }}>
 
         {% block data %}

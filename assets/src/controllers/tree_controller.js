@@ -1,112 +1,109 @@
-// tree-bundle/assets/src/controllers/tree_controller.js
-
-import {Controller} from "@hotwired/stimulus";
-import jQuery from 'jquery';
-import '@tacman1123/jstree-esm/jquery-plugin';
+import { Controller } from '@hotwired/stimulus';
+import { createTree, getTree, destroyTree } from '../jstree_runtime.js';
 
 export default class extends Controller {
-
     static values = {
-        msg: {type: String, default: ''},
-        plugins: {type: Array, default: ['checkbox', 'theme', "types", 'sort']},
-        types: {type: Object, default: {}}
-        // interval: { type: Number, default: 5 },
-        // clicked: { type: Boolean, default: false },
-    }
+        plugins: { type: Array, default: [] },
+        types: { type: Object, default: {} },
+        checkboxes: { type: Boolean, default: false },
+    };
 
-    static targets = ["html", "ajax"]
+    static targets = ['html'];
 
     connect() {
+        this.root = this.hasHtmlTarget ? this.htmlTarget : this.element;
+        this.root.classList.add('sv-tree');
+        this.initializeTree();
+    }
 
-        let msg = 'Hello from tree-bundle tree_controller ' + this.identifier;
-        console.error(msg);
-        // this.html(this.element);
-        // // this.element.textContent = msg;
-        // if (this.hasHtmlTarget) {
-        //     this.html(this.htmlTarget);
-        // }
-        console.log('hello from ' + this.identifier);
-        // if no target, then the controller is on the ul element
-        // this.element.textContent = msg;
-        let el = this.element;
-        if (!this.hasHtmlTarget) {
-            // @todo: handle just the controller
-            el = this.htmlTarget;
+    disconnect() {
+        if (this.root) {
+            this.root.removeEventListener('ready.jstree', this.onReady);
+            this.root.removeEventListener('changed.jstree', this.onChanged);
+            this.root.removeEventListener('select_node.jstree', this.onSelectNode);
+            destroyTree(this.root);
         }
-        this.html(el);
+    }
 
-        // window.addEventListener('jstree', (ev, data) => {
-        //     console.log("Event received", ev.type);
-        // })
+    initializeTree() {
+        const plugins = [...this.pluginsValue];
+        if (this.checkboxesValue && !plugins.includes('checkbox')) {
+            plugins.push('checkbox');
+        }
+        if (!plugins.includes('search')) {
+            plugins.push('search');
+        }
+        if (Object.keys(this.typesValue || {}).length > 0 && !plugins.includes('types')) {
+            plugins.push('types');
+        }
+
+        createTree(this.root, {
+            plugins,
+            core: {
+                check_callback: true,
+                themes: {
+                    name: false,
+                    url: false,
+                    dots: false,
+                    icons: true,
+                },
+            },
+            types: this.typesValue,
+        });
+
+        this.root.addEventListener('ready.jstree', this.onReady);
+        this.root.addEventListener('changed.jstree', this.onChanged);
+        this.root.addEventListener('select_node.jstree', this.onSelectNode);
+    }
+
+    onReady = (event) => {
+        const detail = event.detail || {};
+        window.dispatchEvent(new CustomEvent('jstree.ready', {
+            detail: {
+                rootId: this.root.id || null,
+                instance: detail.instance || null,
+            },
+        }));
+    }
+
+    onChanged = (event) => {
+        const detail = event.detail || {};
+        const payload = {
+            msg: 'changed',
+            data: detail,
+            node: detail.node || null,
+            selected: detail.selected || [],
+        };
+        window.dispatchEvent(new CustomEvent('jstree', { detail: payload }));
+        window.dispatchEvent(new CustomEvent('apitree_changed', { detail: payload }));
+    }
+
+    onSelectNode = (event) => {
+        const detail = event.detail || {};
+        const payload = {
+            msg: 'click',
+            data: detail.node ? detail.node.data || {} : {},
+            node: detail.node || null,
+            selected: detail.selected || [],
+        };
+        window.dispatchEvent(new CustomEvent('jstree', { detail: payload }));
+        window.dispatchEvent(new CustomEvent('apitree_changed', { detail: payload }));
     }
 
     search(event) {
-        // this.$element.jstree(true).search(event.currentTarget.value, {
-        //     show_only_matches: true,
-        //     show_only_matches_children: true
-        // });
-        this.$element.jstree(true).search(event.currentTarget.value, false, true, true);
-    }
-
-    addListeners() {
-        console.log('adding listeners. ');
-        this.$element
-            .on('changed.jstree', this.onChanged) // triggered when selection changes, can be multiple, data is tree data, not node data
-            .on('ready.jstree', (e, data) => {
-                console.warn('ready.jstree fired, so opening_all');
-                // $element.jstree('open_all');
-            })
-    }
-
-    onChanged(event, data) {
-        var i, j, r = [];
-        let instance = data.instance;
-        for(i = 0, j = data.selected.length; i < j; i++) {
-            let node = instance.get_node(data.selected[i]);
-            // r.push(instance.data('path'));
-            console.log(node.data.path);
-            // instance.jstree().open(); // not sure how to do this.
-                    // the event.type is ready, not ready.jstree
-            // this._dispatchEvent(event.type + '.jstree', {msg: event.type, event, d: data})
-
-            // window.dispatchEvent(new CustomEvent('jstree', {
-            //         detail: {
-            //             data: node.data,
-            //             msg: event.type}
-            //     }
-            // ));
-            // let jsTreeData = JSON.parse(node.data.jstree);
-            // console.warn(jsTreeData, jsTreeData.path);
+        const term = (event.currentTarget?.value || '').trim();
+        const tree = getTree(this.root);
+        if (!tree) {
+            return;
         }
-        // console.log(r);
-        // console.log($(data).dataset);
+        tree.search(term);
     }
 
-
-    html(el) {
-        // jQuery.tree.reference(el );
-        this.$element = jQuery(el);
-        // this.$element = jQuery.jstree.reference(el);
-        this.$element.jstree(
-            {
-                "plugins": this.pluginsValue,
-                "types": this.typesValue
-            }
-        );
-
-        this.addListeners();
-
+    clearSearch() {
+        const tree = getTree(this.root);
+        if (!tree) {
+            return;
+        }
+        tree.clear_search();
     }
-
-    _dispatchEvent(name, payload) {
-
-        // name = 'jstree';
-        let ev = new CustomEvent(name, { detail: payload });
-        Object.defineProperty(ev, 'target', {writable: false, value: window});
-        // let ev = new Event(name, { detail: payload });
-        console.log('Dispatching event ' + name + " " + payload.msg);
-        // this.element.dispatchEvent(ev);
-        window.dispatchEvent(ev);
-    }
-
 }

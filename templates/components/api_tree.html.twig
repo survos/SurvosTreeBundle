@@ -1,24 +1,25 @@
 {# templates/components/api_tree.html.twig #}
-<h3>{{ this.stimulusController }} {{ apiUrl|default('~') }} </h3>
-<div
-        {{ stimulus_controller(this.stimulusController, {
-            api_call:  apiUrl|default(api_route(this.class)),
-            filter: this.filter
-        }) }}
->
-    <div {{ stimulus_target(this.stimulusController, 'message') }}>Messages go here.</div>
+<div {{ stimulus_controller(this.stimulusController, {
+    api_call: apiUrl|default(api_route(this.class)),
+    filter: this.filter
+}) }}>
+    <div class="mb-2 d-flex gap-2">
+        <input
+                type="search"
+                class="form-control"
+                placeholder="Search tree..."
+                {{ stimulus_action(this.stimulusController, 'search', 'input') }}
+        />
+        <button
+                type="button"
+                class="btn btn-outline-secondary"
+                {{ stimulus_action(this.stimulusController, 'clearSearch') }}
+        >Clear</button>
+    </div>
 
-    <h3>Html</h3>
-    <ol {{ stimulus_target(this.stimulusController, 'html') }}>
-        <li>
-            Html tree here?
+    <div class="small text-muted mb-2" {{ stimulus_target(this.stimulusController, 'message') }}>Loading tree...</div>
 
-        </li>
-    </ol>
-
-    <h3>Ajax</h3>
-    <ol {{ stimulus_target(this.stimulusController, 'ajax') }}>
-        Ajax tree will be populated here.
-    </ol>
+    <div {{ stimulus_target(this.stimulusController, 'ajax') }}>
+        <ul><li>Loading...</li></ul>
+    </div>
 </div>
-

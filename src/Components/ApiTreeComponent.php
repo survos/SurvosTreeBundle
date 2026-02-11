@@ -13,7 +13,7 @@ class ApiTreeComponent
     public function __construct(
         public ?string $stimulusController
     ) {
-        //        ='@survos/tree-bundle/api_tree';
+        $this->stimulusController ??= '@survos/tree-bundle/api_tree';
     }
 
     public iterable $data;
